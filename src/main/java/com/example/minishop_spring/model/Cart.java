@@ -6,30 +6,37 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.persistence.*;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Accessors(chain = true)
+@Entity
 public class Cart {
-    // 고유번호
-    private int id;
 
-    // 사용자 고유번호
-    private int memberId;
+    @Id
+    private Integer id;
+
+    @Column(name = "member_id")
+    private Integer memberId;
 
     // 상품 고유번호
-    private int productId;
+    @Column(name = "product_id")
+    private Integer productId;
 
     // 상품 수량
-    private int productQuantity;
+    @Column(name = "product_quantity")
+    private Integer productQuantity;
 
     // 상품 색상
+    @Column(name = "product_color")
     private String productColor;
 
     // 상품 사이즈
+    @Column(name = "product_size")
     private String productSize;
 
-    // 상품
+    @OneToOne
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
 }

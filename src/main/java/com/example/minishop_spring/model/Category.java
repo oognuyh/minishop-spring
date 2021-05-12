@@ -1,20 +1,23 @@
 package com.example.minishop_spring.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Accessors(chain = true)
 public class Category {
-    // 고유번호
-    private int id;
 
-    // 카테고리 이름
+    @Id
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "name")
     private String name;
 }
