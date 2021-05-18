@@ -2,16 +2,21 @@ package com.example.minishop_spring.service;
 
 import com.example.minishop_spring.model.Member;
 import com.example.minishop_spring.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+@Slf4j
+@Transactional
+@AllArgsConstructor
 @Service("memberService")
-public class MemberServiceImpl implements MemberService {
-    @Autowired
-    private MemberRepository memberRepository;
+public
+class MemberServiceImpl implements MemberService {
+    private final MemberRepository memberRepository;
 
     @Override
     public Optional<Member> signIn(String id, String password) {
@@ -24,14 +29,25 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Member signUp(Member member) {
-        return memberRepository.save(member);
+    public boolean signUp(Member member, HttpSession session) {
+        try {
+            session.setAttribute("memberId", memberRepository.save(member).getId());
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Transactional
     @Override
     public Member update(Member member) {
         return memberRepository.save(member);
+    }
+
+    @Override
+    public Optional<Member> fetchById(Integer id) {
+        return memberRepository.findById(id);
     }
 
     @Override
