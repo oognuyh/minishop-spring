@@ -1,3 +1,4 @@
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
 <nav id="nav" class="navbar navbar-expand-lg navbar-dark bg-dark" v-cloak>
     <!-- brand -->
     <a class="navbar-brand" href="${pageContext.request.contextPath}/">MiniShop</a>
@@ -12,13 +13,13 @@
                 <a class="nav-link" :href="icon === 'login' ? '/signin' : '/signout'"><i class="material-icons">{{ icon }}</i></a>
             </li>
             <li class="nav-item mx-2 mx-lg-0">
-                <a class="nav-link" href="${pageContext.request.contextPath}/mypage"><i class="material-icons">account_circle</i></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/auth/mypage"><i class="material-icons">account_circle</i></a>
             </li>
             <li class="nav-item mx-2 mx-lg-0">
-                <a class="nav-link" href="${pageContext.request.contextPath}/order"><i class="material-icons">receipt</i></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/auth/order"><i class="material-icons">receipt</i></a>
             </li>
             <li class="nav-item mx-2 mx-lg-0">
-                <a class="nav-link" href="${pageContext.request.contextPath}/cart"><i class="material-icons">shopping_cart</i></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/auth/cart/list"><i class="material-icons">shopping_cart</i></a>
             </li>
         </ul>
     </div>
@@ -49,7 +50,9 @@
 
 <!-- Check -->
 <script type="module">
-    const member = null;
+    const member = JSON.parse('<%= new ObjectMapper().writeValueAsString(session.getAttribute("member")) %>');
+
+    console.log(member);
 
     const nav = new Vue({
         el: "#nav",

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.NoSuchElementException;
+import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
@@ -30,6 +30,13 @@ public class MemberController {
         return "member/signup";
     }
 
+    @GetMapping("/signout")
+    public String showSignOut(HttpSession session) {
+        session.invalidate();
+
+        return "redirect: /";
+    }
+
     @GetMapping("/auth/mypage")
     public ModelAndView showMyPage(HttpSession session) throws JsonProcessingException {
         ModelAndView modelAndView = new ModelAndView();
@@ -42,16 +49,22 @@ public class MemberController {
     }
 
     @PostMapping("/signin")
-    public String signIn(@RequestParam String id,
-                         @RequestParam String password,
+    @ResponseBody
+    public String signIn(@RequestBody Map<String, Object> params,
                          HttpSession session) {
+
+        String id = (String) params.get("id");
+        String password = (String) params.get("password");
+
+        log.info("id: {} password: {}", id, password);
 
         Optional<Member> member = memberService.signIn(id, password);
         if (member.isPresent()) {
             session.setAttribute("member", member.get());
-            return "redirect: /";
+
+            return "success";
         } else {
-            return "redirect: /signin";
+            return "failure";
         }
     }
 
