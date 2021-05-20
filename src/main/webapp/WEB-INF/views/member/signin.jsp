@@ -78,7 +78,9 @@
                     .then(response => response.text())
                     .then(status => {
                         if (status === "success") {
-                            location.href = "/";
+                            const destination = "<%= session.getAttribute("destination") %>"
+
+                            location.replace(destination === "null" ? "/" : destination);
                         } else {
                             swal("Failure", "Failed to sign in. Try again!", "error");
                         }
