@@ -1,22 +1,35 @@
-<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
-<nav id="nav" class="navbar navbar-expand-lg navbar-dark bg-dark" v-cloak>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <!-- brand -->
     <a class="navbar-brand" href="${pageContext.request.contextPath}/">MiniShop</a>
 
     <!-- right fixed menus -->
     <div class="d-flex order-lg-1 ml-auto pr-2">
-        <span  class="navbar-text">
-            Hello, <span>{{ member.name }}</span>
+        <span class="navbar-text mx-2">
+            <span>
+                <sec:authorize access="isAuthenticated()">
+                    <sec:authentication property="principal" var="account" />
+                    Hello, ${account.username == "admin" ? account.username : account.member.name}
+                </sec:authorize>
+            </span>
         </span>
         <ul class="navbar-nav flex-row">
             <li class="nav-item mx-2 mx-lg-0">
-                <a class="nav-link" :href="icon === 'login' ? '/signin' : '/signout'"><i class="material-icons">{{ icon }}</i></a>
+                <sec:authorize access="isAnonymous()">
+                    <a class="nav-link" href="${pageContext.request.contextPath}/signin"><i class="material-icons">login</i></a>
+                </sec:authorize>
+                <sec:authorize access="isAuthenticated()">
+                    <form action="${pageContext.request.contextPath}/signout" method="post">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        <button type="submit" class="btn nav-link"><i class="material-icons">logout</i></button>
+                    </form>
+                </sec:authorize>
             </li>
             <li class="nav-item mx-2 mx-lg-0">
                 <a class="nav-link" href="${pageContext.request.contextPath}/auth/mypage"><i class="material-icons">account_circle</i></a>
             </li>
             <li class="nav-item mx-2 mx-lg-0">
-                <a class="nav-link" href="${pageContext.request.contextPath}/auth/order"><i class="material-icons">receipt</i></a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/auth/order/history"><i class="material-icons">receipt</i></a>
             </li>
             <li class="nav-item mx-2 mx-lg-0">
                 <a class="nav-link" href="${pageContext.request.contextPath}/auth/cart/list"><i class="material-icons">shopping_cart</i></a>
@@ -47,18 +60,3 @@
         </ul>
     </div>
 </nav>
-
-<!-- Check -->
-<script type="module">
-    const member = JSON.parse('<%= new ObjectMapper().writeValueAsString(session.getAttribute("member")) %>');
-
-    console.log(member);
-
-    const nav = new Vue({
-        el: "#nav",
-        data: {
-            member: member || { name: "Unknown" },
-            icon: member ? "logout" : "login"
-        }
-    })
-</script>

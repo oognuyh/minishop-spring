@@ -1,6 +1,6 @@
 package com.example.minishop_spring.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -21,12 +21,12 @@ import java.util.Objects;
 import java.util.Properties;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableTransactionManagement
-@EnableJpaRepositories("com.example.minishop_spring.repository")
 @PropertySource({"classpath:database.properties"})
+@EnableJpaRepositories("com.example.minishop_spring.repository")
 public class DatabaseConfig {
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -50,6 +50,7 @@ public class DatabaseConfig {
         properties.setProperty("hibernate.cache.use_second_level_cache", environment.getProperty("hibernate.cache.use_second_level_cache"));
         properties.setProperty("hibernate.cache.use_query_cache", environment.getProperty("hibernate.cache.use_query_cache"));
         properties.setProperty("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
+        properties.setProperty("hibernate.ejb.naming_strategy", environment.getProperty("hibernate.ejb.naming_strategy"));
 
         return properties;
     }
