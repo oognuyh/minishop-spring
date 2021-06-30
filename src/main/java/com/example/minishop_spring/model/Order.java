@@ -1,23 +1,22 @@
 package com.example.minishop_spring.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
+@Entity
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Table(name = "order_history")
+@ToString(exclude = { "orderDetails" })
 public class Order {
     // 고유번호
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     // 사용자 고유번호
@@ -73,7 +72,7 @@ public class Order {
     private Integer totalPrice;
 
     // 주문 상세
-    @OneToMany
-    @JoinColumn(name = "id")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "order")
+    @JsonManagedReference
     private List<OrderDetail> orderDetails;
 }

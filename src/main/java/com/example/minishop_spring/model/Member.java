@@ -20,12 +20,7 @@ import java.util.List;
 public class Member {
     // 고유번호
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_gen")
-    @SequenceGenerator(
-            name = "member_seq_gen",
-            sequenceName = "member_seq",
-            allocationSize = 1
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     // 이름

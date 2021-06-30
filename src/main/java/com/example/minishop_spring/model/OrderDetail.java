@@ -1,32 +1,29 @@
 package com.example.minishop_spring.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "order_detail")
 public class OrderDetail {
     // 고유번호
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // 주문 고유번호
-    @Column(name = "order_id")
-    private Integer orderId;
-
-    // 상품 고유번호
-    @Column(name = "product_id")
-    private Integer productId;
+    @ManyToOne
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    @JsonBackReference
+    private Order order;
 
     // 상품 수량
     @Column(name = "product_quantity")
@@ -46,6 +43,6 @@ public class OrderDetail {
 
     // 상품
     @OneToOne
-    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    @JoinColumn(name = "product_id")
     private Product product;
 }
