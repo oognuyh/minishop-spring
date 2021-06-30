@@ -1,8 +1,6 @@
 package com.example.minishop_spring.config;
 
-import com.example.minishop_spring.model.Account;
-import com.example.minishop_spring.model.Authority;
-import com.example.minishop_spring.model.Member;
+import com.example.minishop_spring.security.AjaxAwareLoginUrlAuthenticationEntryPoint;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -24,6 +23,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final AuthenticationFailureHandler authenticationFailureHandler;
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .loginProcessingUrl("/signin")
                     .usernameParameter("email")
                     .passwordParameter("password")
+                    .successHandler(authenticationSuccessHandler)
                     .failureHandler(authenticationFailureHandler)
                 .and()
                 .logout()
@@ -50,11 +51,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutSuccessUrl("/signin")
                     .invalidateHttpSession(true)
                 .and()
-                .addFilterBefore(characterEncodingFilter, CsrfFilter.class);
+                .addFilterBefore(characterEncodingFilter, CsrfFilter.class)
+                .exceptionHandling()
+                    .authenticationEntryPoint(ajaxAwareLoginUrlAuthenticationEntryPoint());
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web
                 .ignoring()
                 .antMatchers("/images/**", "/webjars/**", "/js/**");
@@ -64,20 +67,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
                 .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder())
-                .and()
-                .inMemoryAuthentication()
-                    .withUser(new Account(Member.builder()
-                            .name("admin")
-                            .password(passwordEncoder().encode("admin"))
-                            .email("admin")
-                            .phoneNumber("01000000000")
-                            .authority(Authority.ADMIN.getValue())
-                            .build()));
+                .passwordEncoder(passwordEncoder());
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AjaxAwareLoginUrlAuthenticationEntryPoint ajaxAwareLoginUrlAuthenticationEntryPoint() {
+        return new AjaxAwareLoginUrlAuthenticationEntryPoint("/signin");
     }
 }
