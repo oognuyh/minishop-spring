@@ -42,7 +42,7 @@ public class OrderDetail {
     private Integer totalPrice;
 
     // 상품
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
 }

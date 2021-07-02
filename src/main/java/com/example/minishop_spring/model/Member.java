@@ -6,6 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,29 +20,37 @@ import java.util.List;
 @Table(name = "member")
 @ToString(exclude = {"orders", "carts"})
 public class Member {
+    public interface DetailsValidator {}
+
     // 고유번호
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     // 이름
+    @NotBlank(message = "이름을 입력해주세요.", groups = DetailsValidator.class)
     private String name;
 
     // 이메일(U)
     @Column(unique = true)
+    @Email(message = "이메일 형식이 올바르지 않습니다.", groups = DetailsValidator.class)
     private String email;
 
     // 비밀번호
+    @NotBlank(message = "비밀번호는 필수 입력값입니다.")
     private String password;
 
     // 전화번호
     @Column(name = "phone_number", unique = true)
+    @NotBlank(message = "전화번호를 입력하세요.", groups = DetailsValidator.class)
     private String phoneNumber;
 
     // 우편번호
+    @NotBlank(message = "우편번호를 입력하세요.", groups = DetailsValidator.class)
     private String zip;
 
     // 주소 1
+    @NotBlank(message = "주소를 입력하세요.", groups = DetailsValidator.class)
     private String address1;
 
     // 주소 2

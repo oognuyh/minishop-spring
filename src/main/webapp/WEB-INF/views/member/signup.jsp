@@ -1,4 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.Enumeration" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
     <!-- Common Head -->
@@ -9,14 +10,16 @@
     <div id="app" class="container" v-cloak>
         <div class="row py-5 mt-4 align-items-center">
             <div class="col-md-5 pr-lg-5 mb-5 mb-md-0">
-                <img src="https://res.cloudinary.com/mhmd/image/upload/v1569543678/form_d9sh6m.svg" alt="" class="img-fluid mb-3 d-none d-md-block">
+                <!-- <img src="https://res.cloudinary.com/mhmd/image/upload/v1569543678/form_d9sh6m.svg" alt="" class="img-fluid mb-3 d-none d-md-block"> -->
                 <h1>Create an Account</h1>
                 <p class="font-italic text-muted mb-0">It's free and hardly takes more than 30 seconds.</p>
             </div>
 
             <!-- Registeration Form -->
             <div class="col-md-7 col-lg-6 ml-auto">
-                <form class="needs-validation" @submit="submit">
+                <form class="needs-validation" action="/signup" method="post">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" >
+
                     <div class="row">
                         <!-- Name -->
                         <div class="input-group col-lg-12 mb-4">
@@ -26,6 +29,10 @@
                                 </span>
                             </div>
                             <input id="name" type="text" name="name" placeholder="Name" class="form-control bg-white border-left-0 border-md" :value="member.name" @input="member.name = $event.target.value" required>
+
+                            <div class="col-lg-12 text-danger small mt-1" v-if="errors.name">
+                                {{ errors.name }}
+                            </div>
                         </div>
 
                         <!-- Password -->
@@ -37,6 +44,10 @@
                             </div>
                             <input id="password" type="password" name="password" placeholder="Password"
                                    class="form-control bg-white border-left-0 border-md" v-model="member.password" required>
+
+                            <div class="col-lg-12 text-danger small mt-1" v-if="errors.password">
+                                {{ errors.password }}
+                            </div>
                         </div>
 
                         <!-- Password Confirmation -->
@@ -59,6 +70,10 @@
                             </div>
                             <input id="email" type="text" name="email" placeholder="Email Address"
                                    class="form-control bg-white border-left-0 border-md" v-model="member.email" @input="checkDuplicateEmail" required>
+
+                            <div class="col-lg-12 text-danger small mt-1" v-if="errors.email">
+                                {{ errors.email }}
+                            </div>
                         </div>
 
                         <!-- Phone Number -->
@@ -70,6 +85,10 @@
                             </div>
                             <input id="phoneNumber" type="tel" name="phoneNumber" placeholder="Phone"
                                    class="form-control bg-white border-md border-left-0" v-model="member.phoneNumber" @input="checkDuplicatePhoneNumber" maxlength="11"  required>
+
+                            <div class="col-lg-12 text-danger small mt-1" v-if="errors.phoneNumber">
+                                {{ errors.phoneNumber }}
+                            </div>
                         </div>
 
                         <!-- ZIP -->
@@ -86,6 +105,10 @@
                                     <i class="material-icons text-muted">search</i>
                                 </span>
                             </a>
+
+                            <div class="col-lg-12 text-danger small mt-1" v-if="errors.zip">
+                                {{ errors.zip }}
+                            </div>
                         </div>
 
                         <!-- Address 1 -->
@@ -96,6 +119,10 @@
                                             </span>
                             </div>
                             <input id="address1" type="text" name="address1" placeholder="Address 1" class="form-control bg-white border-md border-left-0 pl-3" v-model="member.address1" required>
+
+                            <div class="col-lg-12 text-danger small mt-1" v-if="errors.address1">
+                                {{ errors.address1 }}
+                            </div>
                         </div>
 
                         <!-- Address 2 -->
@@ -128,7 +155,6 @@
                                 <a href="${pageContext.request.contextPath}/signin" class="text-primary ml-2">Sign in</a>
                             </p>
                         </div>
-
                     </div>
                 </form>
             </div>
@@ -136,6 +162,8 @@
     </div>
 
     <script type="module">
+        const errors = JSON.parse('<%= request.getAttribute("errors") %>')
+
         const app = new Vue({
             el: "#app",
             data: {
@@ -148,41 +176,30 @@
                     zip: "",
                     address1: "",
                     address2: "",
+                },
+                errors: {
+                    name: "",
+                    password: "",
+                    email: "",
+                    phoneNumber: "",
+                    zip: "",
+                    address1: "",
+                    ...errors
                 }
             },
             methods: {
-                submit: function (e) {
-                    e.preventDefault();
-
-                    fetch("/signup", {
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        method: "post",
-                        body: JSON.stringify(this.member)
-                    })
-                    .then(response => response.text())
-                    .then(status => {
-                        if (status === "success") {
-                            swal("Success", "You have successfully signed up.", "success")
-                            .then(() => location.href = "/");
-                        } else {
-                            swal("Failure", "Failed to sign up.", "error");
-                        }
-                    })
-                },
                 checkDuplicateEmail: function (e) {
-                    fetch("/isDuplicate?email=" + this.member.email)
-                        .then(response => response.text())
+                    fetch("/is-duplicate?email=" + this.member.email)
+                        .then(response => response.json())
                         .then(response => {
-                            e.target.setCustomValidity(response === "unique" ? "" : "이미 존재하는 이메일입니다.");
+                            e.target.setCustomValidity(response.ok ? "" : "이미 존재하는 이메일입니다.");
                         });
                 },
                 checkDuplicatePhoneNumber: function (e) {
-                    fetch("/isDuplicate?phoneNumber=" + this.member.phoneNumber)
-                        .then(response => response.text())
+                    fetch("/is-duplicate?phoneNumber=" + this.member.phoneNumber)
+                        .then(response => response.json())
                         .then(response => {
-                            e.target.setCustomValidity(response === "unique" ? "" : "이미 존재하는 전화번호입니다.");
+                            e.target.setCustomValidity(response.ok ? "" : "이미 존재하는 전화번호입니다.");
                         });
                 },
                 checkPassword: function (e) {

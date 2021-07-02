@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 
 @Data
 @NoArgsConstructor
@@ -24,14 +26,17 @@ public class Cart {
 
     // 상품 수량
     @Column(name = "product_quantity")
+    @Positive(message = "상품 수량은 1개 이상이어야 합니다.")
     private Integer productQuantity;
 
     // 상품 색상
     @Column(name = "product_color")
+    @NotBlank(message = "상품 색상을 선택해야합니다.")
     private String productColor;
 
     // 상품 사이즈
     @Column(name = "product_size")
+    @NotBlank(message = "상품 사이즈를 선택해야합니다.")
     private String productSize;
 
     @OneToOne

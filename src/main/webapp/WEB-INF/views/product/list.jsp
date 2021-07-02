@@ -35,6 +35,8 @@
     <script type="module">
         const products = JSON.parse('<%= request.getAttribute("products") %>')
 
+        console.log(products);
+
         const app = new Vue({
             el: "#app",
             data: {
@@ -42,7 +44,7 @@
             },
             methods: {
                 moveToDetail: function (product) {
-                    location.href = `/product/detail?productId=\${product.id}`;
+                    location.href = "/product/detail/" + product.id;
                 }
             }
         });

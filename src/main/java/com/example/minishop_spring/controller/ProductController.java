@@ -1,13 +1,15 @@
 package com.example.minishop_spring.controller;
 
+import com.example.minishop_spring.exception.ProductDoesNotExistException;
 import com.example.minishop_spring.model.Product;
 import com.example.minishop_spring.service.ProductService;
+import com.example.minishop_spring.util.ObjectUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,23 +27,21 @@ public class ProductController {
     }
 
     @GetMapping("/list")
-    public ModelAndView findProducts(@RequestParam(defaultValue = "1") int categoryId) throws JsonProcessingException {
-        ModelAndView modelAndView = new ModelAndView();
-        List<Product> products = productService.fetchProductsByCategoryId(categoryId);
+    public ModelAndView showProducts(@RequestParam(defaultValue = "1") int categoryId) throws JsonProcessingException {
+        ModelAndView modelAndView = new ModelAndView("product/list");
 
-        modelAndView.setViewName("product/list");
-        modelAndView.addObject("products", new ObjectMapper().writeValueAsString(products));
+        List<Product> products = productService.fetchProductsByCategoryId(categoryId);
+        modelAndView.addObject("products", ObjectUtil.asString(products));
 
         return modelAndView;
     }
 
-    @GetMapping("/detail")
-    public ModelAndView findProductById(@RequestParam int productId) throws IllegalAccessException, JsonProcessingException {
-        ModelAndView modelAndView = new ModelAndView();
-        Product product = productService.fetchProductById(productId).orElseThrow(IllegalAccessException::new);
+    @GetMapping("/detail/{productId}")
+    public ModelAndView showProductDetails(@PathVariable("productId") int productId) throws JsonProcessingException {
+        ModelAndView modelAndView = new ModelAndView("product/detail");
 
-        modelAndView.setViewName("product/detail");
-        modelAndView.addObject("product", new ObjectMapper().writeValueAsString(product));
+        Product product = productService.fetchProductById(productId).orElseThrow(ProductDoesNotExistException::new);
+        modelAndView.addObject("product", ObjectUtil.asString(product));
 
         return modelAndView;
     }
