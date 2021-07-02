@@ -21,15 +21,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public Member signUp(Member member) {
-        try {
-            member.setPassword(passwordEncoder.encode(member.getPassword()));
-            member.setAuthority(Authority.MEMBER.getValue());
+    public void signUp(Member member) {
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
+        member.setAuthority(Authority.MEMBER.getValue());
 
-            return memberRepository.save(member);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to sign up");
-        }
+        memberRepository.save(member);
     }
 
     @Transactional
@@ -62,17 +58,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findById(Integer id) {
-        return memberRepository.findById(id).orElseThrow(MemberDoesNotExistException::new);
-    }
+    public boolean isDuplicateEmail(Member member, String email) {
+        if (member.getEmail().equals(email)) return false;
 
-    @Override
-    public boolean isDuplicateEmail(String email) {
         return memberRepository.existsByEmail(email);
     }
 
     @Override
-    public boolean isDuplicatePhoneNumber(String phoneNumber) {
+    public boolean isDuplicatePhoneNumber(Member member, String phoneNumber) {
+        if (member.getPhoneNumber().equals(phoneNumber)) return false;
+
         return memberRepository.existsByPhoneNumber(phoneNumber);
     }
 }
