@@ -33,15 +33,19 @@
 ## Screens  
 | 상품목록 | 상품상세 | 장바구니 |
 |:--:|:--:|:--:|
-|![home](https://user-images.githubusercontent.com/48203569/124356378-b52c3600-dc50-11eb-959a-7a43f745f6a5.png)|![details](https://user-images.githubusercontent.com/48203569/124356068-2bc83400-dc4f-11eb-9367-88c944d2d703.png)|![cart](https://user-images.githubusercontent.com/48203569/124356101-531f0100-dc4f-11eb-9141-962d89824478.png)|
+|![home][home]|![details][productdetails]|![cart][cart]|
 
 | 주문 | 주문내역 | 로그인 |
 |:--:|:--:|:--:|
-|![checkout](https://user-images.githubusercontent.com/48203569/124356102-53b79780-dc4f-11eb-8a7d-63c5aa3b335b.png)|![orderhisory](https://user-images.githubusercontent.com/48203569/124356099-52866a80-dc4f-11eb-847c-4072d59b1887.png)|![signin](https://user-images.githubusercontent.com/48203569/124356103-53b79780-dc4f-11eb-96a5-e1d46d0570f9.png)
+|![checkout][checkout]|![orderhisory][orderhistory]|![signin][signin]|
 
-| 회원가입 | 404 | 500 |
+| 회원가입 | 회원정보 | 404 |
 |:--:|:--:|:--:|
-|![signup](https://user-images.githubusercontent.com/48203569/124356097-51edd400-dc4f-11eb-9566-4b67cf188abb.png)|![404](https://user-images.githubusercontent.com/48203569/124356637-f6711580-dc51-11eb-916c-9fec940730a6.png)|![500](https://user-images.githubusercontent.com/48203569/124356640-f7a24280-dc51-11eb-80b6-3fcfb35db6fe.png)|
+|![signup][signup]|![mypage][mypage]|![404][404]|
+
+| 500 |  |  |
+|:--:|:--:|:--:|
+|![500][500]|![ ][empty]|![][empty]|
 
 ## What i learned
 * Spring MVC
@@ -53,3 +57,14 @@
 * [Material Icons](https://fonts.google.com/icons)
 * [SweetAlert](https://sweetalert.js.org/)
 
+[empty]: https://user-images.githubusercontent.com/48203569/124358246-68e5f380-dc5a-11eb-8fce-ba6bba59cc8b.png
+[home]: https://user-images.githubusercontent.com/48203569/124356378-b52c3600-dc50-11eb-959a-7a43f745f6a5.png
+[productdetails]: https://user-images.githubusercontent.com/48203569/124356068-2bc83400-dc4f-11eb-9367-88c944d2d703.png
+[signin]: https://user-images.githubusercontent.com/48203569/124356103-53b79780-dc4f-11eb-96a5-e1d46d0570f9.png
+[signup]: https://user-images.githubusercontent.com/48203569/124356097-51edd400-dc4f-11eb-9566-4b67cf188abb.png
+[mypage]: https://user-images.githubusercontent.com/48203569/124356098-52866a80-dc4f-11eb-8820-dba668e0f09d.png
+[cart]: https://user-images.githubusercontent.com/48203569/124356101-531f0100-dc4f-11eb-9141-962d89824478.png
+[checkout]: https://user-images.githubusercontent.com/48203569/124356102-53b79780-dc4f-11eb-8a7d-63c5aa3b335b.png
+[orderhistory]: https://user-images.githubusercontent.com/48203569/124356099-52866a80-dc4f-11eb-847c-4072d59b1887.png
+[404]: https://user-images.githubusercontent.com/48203569/124356637-f6711580-dc51-11eb-916c-9fec940730a6.png
+[500]: https://user-images.githubusercontent.com/48203569/124356640-f7a24280-dc51-11eb-80b6-3fcfb35db6fe.png
